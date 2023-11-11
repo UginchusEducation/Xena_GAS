@@ -6,9 +6,28 @@
 #include "GameFramework/PlayerController.h"
 #include "XenaPlayerController.generated.h"
 
+class UInputMappingContext;
+class UInputAction;
+struct FInputActionValue;
+
 UCLASS()
 class XENA_API AXenaPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
+public:
+	AXenaPlayerController();
+
+protected:
+	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
 	
+private:
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputMappingContext> PlayerContext;
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> MoveAction;
+
+	void Move(const FInputActionValue& InputActionValue);
 };

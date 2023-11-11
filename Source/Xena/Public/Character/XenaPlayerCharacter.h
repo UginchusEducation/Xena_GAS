@@ -10,5 +10,7 @@ UCLASS()
 class XENA_API AXenaPlayerCharacter : public AXenaCharacterBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	AXenaPlayerCharacter();
 };

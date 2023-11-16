@@ -3,6 +3,8 @@
 
 #include "Character/XenaPlayerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Player/XenaPlayerState.h"
+#include "AbilitySystemComponent.h"
 
 AXenaPlayerCharacter::AXenaPlayerCharacter()
 {
@@ -14,4 +16,29 @@ AXenaPlayerCharacter::AXenaPlayerCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
 	bUseControllerRotationYaw = false;
+}
+
+void AXenaPlayerCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	// [SERVER] Init ability actor info
+	InitAbilityActorInfo();
+}
+
+void AXenaPlayerCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	// [CLIENT] Init ability actor info
+	InitAbilityActorInfo();
+}
+
+void AXenaPlayerCharacter::InitAbilityActorInfo()
+{
+	AXenaPlayerState* XenaPlayerState = GetPlayerState<AXenaPlayerState>();
+	check(XenaPlayerState);
+	XenaPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(XenaPlayerState, this);
+	AbilitySystemComponent = XenaPlayerState->GetAbilitySystemComponent();
+	AttributeSet = XenaPlayerState->GetAttributeSet();
 }

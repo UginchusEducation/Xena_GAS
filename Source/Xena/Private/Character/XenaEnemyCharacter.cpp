@@ -2,7 +2,20 @@
 
 
 #include "Character/XenaEnemyCharacter.h"
+#include "GAS/XenaAbilitySystemComponent.h"
+#include "GAS/XenaAttributeSet.h"
 #include "Xena/Xena.h"
+
+AXenaEnemyCharacter::AXenaEnemyCharacter()
+{
+	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+
+	AbilitySystemComponent = CreateDefaultSubobject<UXenaAbilitySystemComponent>("AbilitySystemComponent");
+	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+
+	AttributeSet = CreateDefaultSubobject<UXenaAttributeSet>("AttributeSet");
+}
 
 void AXenaEnemyCharacter::HighlightActor()
 {
@@ -20,4 +33,11 @@ void AXenaEnemyCharacter::UnhighlightActor()
 
 	GetMesh()->SetRenderCustomDepth(false);
 	Weapon->SetRenderCustomDepth(false);
+}
+
+void AXenaEnemyCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }

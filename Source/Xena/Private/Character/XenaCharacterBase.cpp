@@ -12,6 +12,11 @@ AXenaCharacterBase::AXenaCharacterBase()
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
+UAbilitySystemComponent* AXenaCharacterBase::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
 void AXenaCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();

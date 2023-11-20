@@ -5,6 +5,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/XenaPlayerState.h"
 #include "AbilitySystemComponent.h"
+#include "Player/XenaPlayerController.h"
+#include "UI/HUD/XenaHUD.h"
 
 AXenaPlayerCharacter::AXenaPlayerCharacter()
 {
@@ -41,4 +43,15 @@ void AXenaPlayerCharacter::InitAbilityActorInfo()
 	XenaPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(XenaPlayerState, this);
 	AbilitySystemComponent = XenaPlayerState->GetAbilitySystemComponent();
 	AttributeSet = XenaPlayerState->GetAttributeSet();
+
+	if (AXenaPlayerController* PC = Cast<AXenaPlayerController>(GetController()))
+	{
+		if (AXenaHUD* XenaHUD = Cast<AXenaHUD>(PC->GetHUD()))
+		{
+			XenaHUD->InitOverlay(PC, XenaPlayerState, AbilitySystemComponent, AttributeSet);
+		}
+	}
+
+
+
 }

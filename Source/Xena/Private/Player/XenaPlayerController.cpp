@@ -25,9 +25,10 @@ void AXenaPlayerController::BeginPlay()
 	check(PlayerContext);
 
 	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	check(InputSubsystem);
-
-	InputSubsystem->AddMappingContext(PlayerContext, 0);
+	if (InputSubsystem)
+	{
+		InputSubsystem->AddMappingContext(PlayerContext, 0);
+	}
 
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;

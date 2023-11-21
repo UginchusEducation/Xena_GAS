@@ -10,3 +10,11 @@ void UXenaWidgetController::SetWidgetControllerParams(const FWidgetControllerPar
 	AbilitySystemComponent = WCParams.AbilitySystemComponent;
 	AttributeSet = WCParams.AttributeSet;
 }
+
+void UXenaWidgetController::BroadcastInitialValues()
+{
+}
+
+void UXenaWidgetController::BindCallbacksToDependencies()
+{
+}

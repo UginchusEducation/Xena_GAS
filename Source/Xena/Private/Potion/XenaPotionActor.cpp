@@ -27,6 +27,7 @@ void AXenaPotionActor::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 		const UXenaAttributeSet* AttributeSet = Cast<UXenaAttributeSet>(ASCInterface->GetAbilitySystemComponent()->GetAttributeSet(UXenaAttributeSet::StaticClass()));
 		UXenaAttributeSet* MutbleAttributeSet = const_cast<UXenaAttributeSet*>(AttributeSet);
 		MutbleAttributeSet->SetHealth(AttributeSet->GetHealth() + 25.f);
+		MutbleAttributeSet->SetMana(AttributeSet->GetMana() - 25.f);
 		Destroy();
 	}
 }

@@ -22,3 +22,7 @@ void AXenaCharacterBase::BeginPlay()
 	Super::BeginPlay();
 
 }
+
+void AXenaCharacterBase::InitAbilityActorInfo()
+{
+}

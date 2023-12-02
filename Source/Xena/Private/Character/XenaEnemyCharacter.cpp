@@ -39,5 +39,12 @@ void AXenaEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	InitAbilityActorInfo();
+}
+
+void AXenaEnemyCharacter::InitAbilityActorInfo()
+{
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	Cast<UXenaAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
+
 }

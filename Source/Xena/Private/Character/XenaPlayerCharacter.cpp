@@ -37,6 +37,13 @@ void AXenaPlayerCharacter::OnRep_PlayerState()
 	InitAbilityActorInfo();
 }
 
+int32 AXenaPlayerCharacter::GetLevel()
+{
+	const AXenaPlayerState* XenaPlayerState = GetPlayerState<AXenaPlayerState>();
+	check(XenaPlayerState);
+	return XenaPlayerState->GetPlayerLevel();
+}
+
 void AXenaPlayerCharacter::InitAbilityActorInfo()
 {
 	AXenaPlayerState* XenaPlayerState = GetPlayerState<AXenaPlayerState>();
@@ -54,6 +61,6 @@ void AXenaPlayerCharacter::InitAbilityActorInfo()
 		}
 	}
 
-
-
+	ApplyEffectToSelf(DefaultPrimaryAttribute, 1.f);
+	ApplyEffectToSelf(DefaultSecondaryAttribute, 1.f);
 }

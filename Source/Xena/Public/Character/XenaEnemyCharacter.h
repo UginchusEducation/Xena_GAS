@@ -17,10 +17,17 @@ class XENA_API AXenaEnemyCharacter : public AXenaCharacterBase, public IEnemyInt
 public:
 	AXenaEnemyCharacter();
 
+	// Enemy Interface
 	virtual void HighlightActor() override;
 	virtual void UnhighlightActor() override;
+
+	// Combat Interface
+	virtual int32 GetLevel() override;
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterClassDefaults")
+	int32 Level = 1;
 };

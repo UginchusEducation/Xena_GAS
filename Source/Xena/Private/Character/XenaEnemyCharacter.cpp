@@ -35,6 +35,11 @@ void AXenaEnemyCharacter::UnhighlightActor()
 	Weapon->SetRenderCustomDepth(false);
 }
 
+int32 AXenaEnemyCharacter::GetLevel()
+{
+	return Level;
+}
+
 void AXenaEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();

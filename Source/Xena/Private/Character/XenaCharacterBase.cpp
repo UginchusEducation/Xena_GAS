@@ -2,6 +2,8 @@
 
 
 #include "Character/XenaCharacterBase.h"
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
 
 AXenaCharacterBase::AXenaCharacterBase()
 {
@@ -25,4 +27,11 @@ void AXenaCharacterBase::BeginPlay()
 
 void AXenaCharacterBase::InitAbilityActorInfo()
 {
+}
+
+void AXenaCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Attribute, float Level) const
+{
+	const FGameplayEffectContextHandle EffectContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	const FGameplayEffectSpecHandle EffectSpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(Attribute, Level, EffectContextHandle);
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data.Get(), GetAbilitySystemComponent());
 }

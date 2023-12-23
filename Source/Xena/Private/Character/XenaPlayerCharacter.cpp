@@ -57,7 +57,7 @@ void AXenaPlayerCharacter::InitAbilityActorInfo()
 	{
 		if (AXenaHUD* XenaHUD = Cast<AXenaHUD>(PC->GetHUD()))
 		{
-			XenaHUD->InitOverlay(PC, XenaPlayerState, AbilitySystemComponent, AttributeSet);
+			XenaHUD->InitWidgets(PC, XenaPlayerState, AbilitySystemComponent, AttributeSet);
 		}
 	}
 

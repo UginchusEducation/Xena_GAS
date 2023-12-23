@@ -47,6 +47,9 @@ struct FEffectProperties
 	ACharacter* TargetCharacter = nullptr;
 };
 
+template<class T>
+using TStaticFuncPtr = typename TBaseStaticDelegateInstance<T, FDefaultDelegateUserPolicy>::FFuncPtr;
+
 UCLASS()
 class XENA_API UXenaAttributeSet : public UAttributeSet
 {
@@ -59,6 +62,12 @@ public:
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
+	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagToAttributes;
+
+	TStaticFuncPtr<float(int32, float, int32)> RandomFunctionPointer;
+
+	static float RandomFunction(int32 I, float F, int32 I2) {return 0.f;}
+	
 	/*
 	* Primary Attribute
 	*/

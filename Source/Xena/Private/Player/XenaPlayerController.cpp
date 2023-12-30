@@ -2,14 +2,24 @@
 
 
 #include "Player/XenaPlayerController.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
+#include "GameplayTagContainer.h"
+#include "NavigationPath.h"
+#include "NavigationSystem.h"
+#include "XenaGameplayTags.h"
+#include "Components/SplineComponent.h"
+#include "GAS/XenaAbilitySystemComponent.h"
+#include "Input/XenaInputComponent.h"
 #include "Interaction/EnemyInterface.h"
 #include "Math/RotationMatrix.h"
 
 AXenaPlayerController::AXenaPlayerController()
 {
 	bReplicates = true;
+
+	Spline = CreateDefaultSubobject<USplineComponent>("Spline");
 }
 
 void AXenaPlayerController::PlayerTick(float DeltaTime)
@@ -43,9 +53,9 @@ void AXenaPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
-
-	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AXenaPlayerController::Move);
+	UXenaInputComponent* XenaInputComponent = CastChecked<UXenaInputComponent>(InputComponent);
+	XenaInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AXenaPlayerController::Move);
+	XenaInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 }
 
 void AXenaPlayerController::Move(const FInputActionValue& InputActionValue)
@@ -95,4 +105,96 @@ void AXenaPlayerController::CursorTrace()
 			}
 		}
 	}
+}
+
+void AXenaPlayerController::AbilityInputTagPressed(FGameplayTag GameplayTag)
+{
+	if (GameplayTag.MatchesTagExact(FXenaGameplayTags::Get().InputTag_LMB))
+	{
+		bTargeting = ThisActor ? true : false;
+		bAutoRunning = false;
+	}
+}
+
+void AXenaPlayerController::AbilityInputTagReleased(FGameplayTag GameplayTag)
+{
+	if (!GameplayTag.MatchesTagExact(FXenaGameplayTags::Get().InputTag_LMB))
+	{
+		if (GetASC())
+		{
+			GetASC()->AbilityInputTagReleased(GameplayTag);
+		}
+	}
+
+	if (bTargeting)
+	{
+		if (GetASC())
+		{
+			GetASC()->AbilityInputTagReleased(GameplayTag);
+		}
+	}
+	else
+	{
+		APawn* ControlledPawn = GetPawn();
+		if (FollowTime <= ShortPressThreshold && ControlledPawn)
+		{
+			if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControlledPawn->GetActorLocation(), CachedDestination))
+			{
+				Spline->ClearSplinePoints();
+				for (const FVector& PointLoc : NavPath->PathPoints)
+				{
+					Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
+					DrawDebugSphere(GetWorld(), PointLoc, 8.f, 8, FColor::Yellow, false, 5.f);
+				}
+				bAutoRunning = true;
+			}
+		}
+		FollowTime = 0.f;
+		bTargeting = false;
+	}
+}
+
+void AXenaPlayerController::AbilityInputTagHeld(FGameplayTag GameplayTag)
+{
+	if (!GameplayTag.MatchesTagExact(FXenaGameplayTags::Get().InputTag_LMB))
+	{
+		if (GetASC())
+		{
+			GetASC()->AbilityInputTagHeld(GameplayTag);
+		}
+	}
+
+	if (bTargeting)
+	{
+		if (GetASC())
+		{
+			GetASC()->AbilityInputTagHeld(GameplayTag);
+		}
+	}
+	else
+	{
+		FollowTime += GetWorld()->GetDeltaSeconds();
+
+		FHitResult Hit;
+		if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
+		{
+			CachedDestination = Hit.ImpactPoint;			
+		}
+
+		if (APawn* ControlledPawn = GetPawn())
+		{
+			const FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
+			ControlledPawn->AddMovementInput(WorldDirection);
+		}
+	}
+}
+
+UXenaAbilitySystemComponent* AXenaPlayerController::GetASC()
+{
+	if (XenaASC == nullptr)
+	{
+		XenaASC = Cast<UXenaAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn<APawn>()));
+	}
+
+	return XenaASC;
 }

@@ -27,6 +27,7 @@ void AXenaPlayerCharacter::PossessedBy(AController* NewController)
 
 	// [SERVER] Init ability actor info
 	InitAbilityActorInfo();
+	AddCharacterAbilitues();
 }
 
 void AXenaPlayerCharacter::OnRep_PlayerState()

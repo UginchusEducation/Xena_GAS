@@ -4,6 +4,7 @@
 #include "Character/XenaCharacterBase.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "GAS/XenaAbilitySystemComponent.h"
 
 AXenaCharacterBase::AXenaCharacterBase()
 {
@@ -35,4 +36,17 @@ void AXenaCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Attribut
 	EffectContextHandle.AddSourceObject(this);
 	const FGameplayEffectSpecHandle EffectSpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(Attribute, Level, EffectContextHandle);
 	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data.Get(), GetAbilitySystemComponent());
+}
+
+void AXenaCharacterBase::InitializeDefaultAttributes() const
+{
+	// Super::InitializeDefaultAttributes;
+}
+
+void AXenaCharacterBase::AddCharacterAbilitues()
+{
+	UXenaAbilitySystemComponent* XenaASC = CastChecked<UXenaAbilitySystemComponent>(AbilitySystemComponent);
+	if(!HasAuthority()) return;
+
+	XenaASC->AddCharacterAbilities(StartupAbilities);
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+//#include "Abilities/GameplayAbility.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
 #include "XenaCharacterBase.generated.h"
@@ -11,6 +12,7 @@
 class UAbilitySystemComponent;
 class UAttributeSet;
 class UGameplayEffect;
+class UGameplayAbility;
 
 UCLASS(Abstract)
 class XENA_API AXenaCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -48,4 +50,12 @@ protected:
 	TSubclassOf<UGameplayEffect> DefaultVitalAttribute;
 
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Attribute, float Level) const;
+	void InitializeDefaultAttributes() const;
+
+	void AddCharacterAbilitues();
+
+private:
+
+	UPROPERTY(EditAnywhere, Category="Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 };

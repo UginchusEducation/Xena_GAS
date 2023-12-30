@@ -8,6 +8,9 @@
 
 AXenaPlayerState::AXenaPlayerState()
 {
+	// IsNetMode(NM_DedicatedServer);
+	// Blueprint - Can Execute Cosmetic Events
+	
 	NetUpdateFrequency = 100.f;
 
 	AbilitySystemComponent = CreateDefaultSubobject<UXenaAbilitySystemComponent>("AbilitySystemComponent");
